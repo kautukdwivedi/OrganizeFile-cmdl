@@ -1,9 +1,13 @@
-const { createDecipher } = require("crypto");
+#!/usr/bin/env node
 let fse = require("fs-extra");
 let fs = require("fs");
 let cmd = process.argv.slice(2);
 let options = [];
 let folder = [];
+let Images = ["png","jpg","jpeg","gif","svg"];
+let Videos = ["mp4","mp2","m4v","mv4","mov"];
+let Documents = ["pdf","txt","doc"]
+let Audios = ["mp3","au","mpc"]
 for (let x in cmd) {
   if (cmd[x].startsWith("-") && cmd[x].length == 2) {
     options.push(cmd[x]);
@@ -11,9 +15,6 @@ for (let x in cmd) {
     folder.push(cmd[x]);
   }
 }
-
-console.log(options);
-console.log(folder);
 
 if (options.includes("-m") && options.includes("-o")) {
   let dirNames = folder[0];
@@ -90,7 +91,7 @@ function organiseFile(outputdir) {
   });
 
   for (let x in files) {
-    if (files[x].split(".")[1] == "txt") {
+    if (Documents.includes(files[x].split(".")[1])) {
       if (!folders.includes("Documents")) {
         createDir("./" + outputdir + "/Documents");
         folders.push("Documents");
@@ -103,7 +104,7 @@ function organiseFile(outputdir) {
       deletefile("./" + outputdir + "/" + files[x]);
     }
 
-    if (files[x].split(".")[1] == "png") {
+    if (Images.includes(files[x].split(".")[1])) {
       if (!folders.includes("Images")) {
         createDir("./" + outputdir + "/Images");
         folders.push("Images");
@@ -112,6 +113,32 @@ function organiseFile(outputdir) {
       fs.copyFileSync(
         "./" + outputdir + "/" + files[x],
         "./" + outputdir + "/Images/" + files[x]
+      );
+      deletefile("./" + outputdir + "/" + files[x]);
+    }
+
+    if (Videos.includes(files[x].split(".")[1])) {
+      if (!folders.includes("Videos")) {
+        createDir("./" + outputdir + "/Videos");
+        folders.push("Videos");
+        folder.push("Videos");
+      }
+      fs.copyFileSync(
+        "./" + outputdir + "/" + files[x],
+        "./" + outputdir + "/Videos/" + files[x]
+      );
+      deletefile("./" + outputdir + "/" + files[x]);
+    }
+
+    if (Audios.includes(files[x].split(".")[1])) {
+      if (!folders.includes("Audios")) {
+        createDir("./" + outputdir + "/Audios");
+        folders.push("Audios");
+        folder.push("Audios");
+      }
+      fs.copyFileSync(
+        "./" + outputdir + "/" + files[x],
+        "./" + outputdir + "/Audios/" + files[x]
       );
       deletefile("./" + outputdir + "/" + files[x]);
     }
